@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
+﻿using FluentValidation;
 using LegalEntityForm.Data;
-using Microsoft.Extensions.Hosting;
-using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 
 namespace YourNamespace.Controllers
 {
@@ -18,12 +13,12 @@ namespace YourNamespace.Controllers
         private readonly IValidator<OOOForm> _oooFormValidator;
         private readonly IValidator<IPForm> _ipFormValidator;
 
-        public LegalEntityFormController(LocalDataStore dataStore, IWebHostEnvironment environment, IValidator<IPForm> validator, IValidator<OOOForm> oooValidator>)
+        public LegalEntityFormController(LocalDataStore dataStore, IWebHostEnvironment environment, IValidator<IPForm> ipFormvalidator, IValidator<OOOForm> oooFormValidator)
         {
             _dataStore = dataStore;
             _environment = environment;
-            _oooFormValidator = oooValidator;
-            _ipFormValidator = validator;
+            _oooFormValidator = oooFormValidator;
+            _ipFormValidator = ipFormvalidator;
         }
 
         [HttpPost("ip")]
@@ -77,8 +72,7 @@ namespace YourNamespace.Controllers
                 form.LeaseContractScanPath = $"/uploads/{form.LeaseContractScan.FileName}";
             }
 
-            // Save form data in local collection
-            _dataStore.Add(form);
+            _dataStore.AddLegalEntityForm(form);
 
             return Ok(new { Message = "Анкета ИП сохранена" });
         }
@@ -135,7 +129,7 @@ namespace YourNamespace.Controllers
             }
 
             // Save form data in local collection
-            _oooForms.Add(form);
+            _dataStore.AddLegalEntityForm(form);
 
             return Ok(new { Message = "Анкета ООО сохранена" });
         }

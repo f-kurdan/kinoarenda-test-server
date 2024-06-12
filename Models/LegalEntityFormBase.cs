@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 public abstract class LegalEntityFormBase
 {
+    [Key]
+    public int Id { get; set; }
+
     [Required]
     [RegularExpression(@"\d{10}|\d{12}", ErrorMessage = "ИНН должен содержать 10 или 12 цифр.")]
     public string Inn { get; set; }

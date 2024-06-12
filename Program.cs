@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using FluentValidation;
+using KinoarendTest.Validators;
+using LegalEntityForm.Data;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,8 +27,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add a singleton service to hold the form data
-builder.Services.AddSingleton<IList<LegalEntityFormBase>>(new List<LegalEntityFormBase>());
+builder.Services.AddScoped<IValidator<OOOForm>, OOOFormValidator>();
+builder.Services.AddScoped<IValidator<IPForm>, IPFormValidator>();
 
 var app = builder.Build();
 
@@ -44,8 +47,8 @@ app.UseCors();
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "uploads")),
-    RequestPath = "/uploads"
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    RequestPath = "/Images"
 });
 
 app.MapControllers();

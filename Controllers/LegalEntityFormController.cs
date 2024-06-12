@@ -1,35 +1,33 @@
 ﻿using FluentValidation;
 using LegalEntityForm.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace YourNamespace.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LegalEntityFormController : ControllerBase
+    public class LegalEntityFormController(
+        IWebHostEnvironment environment,
+        IValidator<IPForm> ipFormvalidator, 
+        IValidator<OOOForm> oooFormValidator) : ControllerBase
     {
-        private readonly LocalDataStore _dataStore;
-        private readonly IWebHostEnvironment _environment;
-        private readonly IValidator<OOOForm> _oooFormValidator;
-        private readonly IValidator<IPForm> _ipFormValidator;
-
-        public LegalEntityFormController(LocalDataStore dataStore, IWebHostEnvironment environment, IValidator<IPForm> ipFormvalidator, IValidator<OOOForm> oooFormValidator)
-        {
-            _dataStore = dataStore;
-            _environment = environment;
-            _oooFormValidator = oooFormValidator;
-            _ipFormValidator = ipFormvalidator;
-        }
+        private readonly LocalDataStore _dataStore = new ();
+        private readonly IWebHostEnvironment _environment = environment;
+        private readonly IValidator<OOOForm> _oooFormValidator = oooFormValidator;
+        private readonly IValidator<IPForm> _ipFormValidator = ipFormvalidator;
 
         [HttpPost("ip")]
         public async Task<IActionResult> SaveIPForm([FromForm] IPForm form)
         {
-            if (!ModelState.IsValid)
+            var result = _ipFormValidator.Validate(form);
+
+            if (!result.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(result.Errors);
             }
 
-            var uploadsPath = Path.Combine(_environment.ContentRootPath, "uploads");
+            var uploadsPath = Path.Combine(_environment.ContentRootPath, "Images");
             Directory.CreateDirectory(uploadsPath);
 
             if (form.InnScan != null)
@@ -39,7 +37,7 @@ namespace YourNamespace.Controllers
                 {
                     await form.InnScan.CopyToAsync(stream);
                 }
-                form.InnScanPath = $"/uploads/{form.InnScan.FileName}";
+                form.InnScanPath = $"/Images/{form.InnScan.FileName}";
             }
 
             if (form.OgrnipScan != null)
@@ -49,7 +47,7 @@ namespace YourNamespace.Controllers
                 {
                     await form.OgrnipScan.CopyToAsync(stream);
                 }
-                form.OgrnipScanPath = $"/uploads/{form.OgrnipScan.FileName}";
+                form.OgrnipScanPath = $"/Images/{form.OgrnipScan.FileName}";
             }
 
             if (form.EgripScan != null)
@@ -69,7 +67,7 @@ namespace YourNamespace.Controllers
                 {
                     await form.LeaseContractScan.CopyToAsync(stream);
                 }
-                form.LeaseContractScanPath = $"/uploads/{form.LeaseContractScan.FileName}";
+                form.LeaseContractScanPath = $"/Images/{form.LeaseContractScan.FileName}";
             }
 
             _dataStore.AddLegalEntityForm(form);
@@ -80,12 +78,14 @@ namespace YourNamespace.Controllers
         [HttpPost("ooo")]
         public async Task<IActionResult> SaveOOOForm([FromForm] OOOForm form)
         {
-            if (!ModelState.IsValid)
+            var result = _oooFormValidator.Validate(form);
+
+            if (!result.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(result.Errors);
             }
 
-            var uploadsPath = Path.Combine(_environment.ContentRootPath, "uploads");
+            var uploadsPath = Path.Combine(_environment.ContentRootPath, "Images");
             Directory.CreateDirectory(uploadsPath);
 
             if (form.InnScan != null)
@@ -95,7 +95,7 @@ namespace YourNamespace.Controllers
                 {
                     await form.InnScan.CopyToAsync(stream);
                 }
-                form.InnScanPath = $"/uploads/{form.InnScan.FileName}";
+                form.InnScanPath = $"/Images/{form.InnScan.FileName}";
             }
 
             if (form.EgripScan != null)
@@ -105,7 +105,7 @@ namespace YourNamespace.Controllers
                 {
                     await form.EgripScan.CopyToAsync(stream);
                 }
-                form.EgripScanPath = $"/uploads/{form.EgripScan.FileName}";
+                form.EgripScanPath = $"/Images/{form.EgripScan.FileName}";
             }
 
             if (form.LeaseContractScan != null)
@@ -115,7 +115,7 @@ namespace YourNamespace.Controllers
                 {
                     await form.LeaseContractScan.CopyToAsync(stream);
                 }
-                form.LeaseContractScanPath = $"/uploads/{form.LeaseContractScan.FileName}";
+                form.LeaseContractScanPath = $"/Images/{form.LeaseContractScan.FileName}";
             }
 
             if (form.OgrnScan != null)
@@ -125,7 +125,7 @@ namespace YourNamespace.Controllers
                 {
                     await form.OgrnScan.CopyToAsync(stream);
                 }
-                form.OgrnScanPath = $"/uploads/{form.OgrnScan.FileName}";
+                form.OgrnScanPath = $"/Images/{form.OgrnScan.FileName}";
             }
 
             // Save form data in local collection

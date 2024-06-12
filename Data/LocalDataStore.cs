@@ -2,7 +2,7 @@ using LegalEntityForm.Models;
 
 namespace LegalEntityForm.Data
 {
-    public class LocalDataStore 
+    public class LocalDataStore
     { 
         private readonly List<LegalEntityFormBase> _legalEntityForms = new();
 
@@ -14,7 +14,7 @@ namespace LegalEntityForm.Data
 
         public LegalEntityFormBase GetLegalEntityFormById(int id)
         {
-            return _legalEntityForms.FirstOrDefault(le => le.Id == id);
+            return _legalEntityForms?.FirstOrDefault(le => le.Id == id);
         }
     }
 }

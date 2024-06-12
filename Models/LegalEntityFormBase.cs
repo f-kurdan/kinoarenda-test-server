@@ -6,19 +6,14 @@ public abstract class LegalEntityFormBase
     [Key]
     public int Id { get; set; }
 
-    [Required]
-    [RegularExpression(@"\d{10}|\d{12}", ErrorMessage = "ИНН должен содержать 10 или 12 цифр.")]
     public string Inn { get; set; }
     
-    [Required]
     public IFormFile InnScan { get; set; }
 
     public string? InnScanPath { get; set; }
 
-    [Required]
     public DateTime RegistrationDate { get; set; }
 
-    [Required]
     public IFormFile EgripScan { get; set; }
 
     public string? EgripScanPath { get; set; }
@@ -27,6 +22,5 @@ public abstract class LegalEntityFormBase
 
     public string? LeaseContractScanPath { get; set; }
 
-    [Required]
     public List<BankDetails> BankDetails { get; set; }
 }

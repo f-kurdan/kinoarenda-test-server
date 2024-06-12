@@ -1,0 +1,6 @@
+@KinoarendTest_HostAddress = http://localhost:5168
+
+GET {{KinoarendTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

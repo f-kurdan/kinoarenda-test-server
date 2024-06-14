@@ -57,7 +57,7 @@ namespace YourNamespace.Controllers
                 {
                     await form.EgripScan.CopyToAsync(stream);
                 }
-                form.EgripScanPath = $"/uploads/{form.EgripScan.FileName}";
+                form.EgripScanPath = $"/Images/{form.EgripScan.FileName}";
             }
 
             if (form.LeaseContractScan != null)

@@ -2,9 +2,9 @@
 
 public class OOOForm : LegalEntityFormBase
 {
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
 
-    public string ShortName { get; set; }
+    public string? ShortName { get; set; }
 
     public string? Ogrn { get; set; }
 
